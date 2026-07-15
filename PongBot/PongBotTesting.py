@@ -40,29 +40,27 @@ model.eval()
 gym.register_envs(ale_py)
 env = gym.make("ALE/Pong-v5", render_mode = "human", obs_type = "ram")
 
-state_pool = []
-action_pool = []
-reward_pool = []
 
-state = prepro(env.reset()[0])
-prev_state = torch.zeros_like(state)
-
-done = False
-
-while not done:
-
-    state_input = torch.cat((state, prev_state), dim=1)
-
-    with torch.no_grad():
-        prob = model(state_input)
-        action = Bernoulli(prob).sample()
-
-    action = action.item() + 2
-
-    prev_state = state.clone()
-
-    observation, reward, terminated, truncated, info = env.step(action)
-
-    state = prepro(observation)
-
-    done = terminated or truncated
+for i in range(episodes:)
+    state_pool = []
+    action_pool = []
+    reward_pool = []
+    
+    state = prepro(env.reset()[0])
+    prev_state = torch.zeros_like(state)
+    
+    done = False
+    
+    while not done:
+        state_input = torch.cat((state, prev_state), dim=1)
+        with torch.no_grad():
+            prob = model(state_input)
+            action = Bernoulli(prob).sample()
+        action = action.item() + 2
+        prev_state = state.clone()
+        step = env.step(action)
+        state = prepro(step[0])
+        reward = step[1]
+        terminated = step[2]
+        truncated = step[3]
+        done = terminated or truncated
