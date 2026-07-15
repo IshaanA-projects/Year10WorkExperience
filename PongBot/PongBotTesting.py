@@ -43,10 +43,6 @@ env = gym.make("ALE/Pong-v5", render_mode = "human", obs_type = "ram")
 
 
 for i in range(episodes):
-    state_pool = []
-    action_pool = []
-    reward_pool = []
-    
     state = prepro(env.reset()[0])
     prev_state = torch.zeros_like(state)
     
