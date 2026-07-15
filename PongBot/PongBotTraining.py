@@ -40,7 +40,7 @@ env = gym.make("ALE/Pong-v5", obs_type = "ram")
 
 model = PongBot()
 
-optimizer = optim.RMSprop(model.parameters(), lr = alpha, momentum = 0.9)
+optimizer = optim.RMSprop(model.parameters(), lr = alpha)
 
 for i in range(episodes):
     # New episode
