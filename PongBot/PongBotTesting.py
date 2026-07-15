@@ -42,7 +42,7 @@ gym.register_envs(ale_py)
 env = gym.make("ALE/Pong-v5", render_mode = "human", obs_type = "ram")
 
 
-for i in range(episodes:)
+for i in range(episodes):
     state_pool = []
     action_pool = []
     reward_pool = []
