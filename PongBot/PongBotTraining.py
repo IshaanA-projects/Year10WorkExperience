@@ -12,7 +12,9 @@ import torch.nn.functional as F
 discount_factor = 0.99
 alpha = 1e-4
 episodes = 10000
-episode_length = 200
+batch_size = 10
+
+
 class PongBot(nn.Module):
     def __init__(self):
         super().__init__()
@@ -44,6 +46,9 @@ optimizer = optim.RMSprop(model.parameters(), lr = alpha)
 
 for i in range(episodes):
     # New episode
+    if i % batch_size == 0:
+        optimizer.zero_grad()
+    
     state = prepro(env.reset()[0])
     init_state = prepro(np.zeros(128))
     state_pool = []
@@ -103,10 +108,8 @@ for i in range(episodes):
         losses += loss.item()
         loss.backward()
 
-
-
-
-    optimizer.step()
+    if (i + 1) % batch_size == 0:
+        optimizer.step()
 
     if (i + 1) % 500 == 0:
         print(f"Episode : {i+1}")
