@@ -48,7 +48,7 @@ for i in range(episodes):
     # New episode
     if i % batch_size == 0:
         optimizer.zero_grad()
-    
+        losses = 0
     state = prepro(env.reset()[0])
     init_state = prepro(np.zeros(128))
     state_pool = []
@@ -90,7 +90,6 @@ for i in range(episodes):
     reward_pool /= np.max([np.std(reward_pool), 1e-2])
 
     # Gradient descent
-    losses = 0
     optimizer.zero_grad()
     for s in range(len(reward_pool)):
         if s == 0:
@@ -110,10 +109,10 @@ for i in range(episodes):
 
     if (i + 1) % batch_size == 0:
         optimizer.step()
+        print(losses)
 
     if (i + 1) % 500 == 0:
         print(f"Episode : {i+1}")
-        print(losses)
 
 
 torch.save(model, r"bot.pt")
