@@ -49,32 +49,30 @@ for i in range(episodes):
     state_pool = []
     action_pool = []
     reward_pool = []
-
-    for j in range(episode_length):
-        if j == 0:
-            prob = model.forward(init_state)
-            m = Bernoulli(prob).sample()
-            action = m.numpy().astype(int).item() + 2
-            state_pool.append(state)
-            step = env.step(action)
-            state = prepro(step[0])
-            reward = step[1]
-            action_pool.append(action)
-            reward_pool.append(reward)
+    done = False
+    first_step = True
+    while not done:
+        if first_step:
+            state_difference = init_state
+            first_step = False
         else:
-            prob = model.forward(state - state_pool[-1])
-            m = Bernoulli(prob).sample()
-            action = m.numpy().astype(int).item() + 2
-            state_pool.append(state)
-            step = env.step(action)
-            state = prepro(step[0])
-            reward = step[1]
-            action_pool.append(action)
-            reward_pool.append(reward)
+            state_difference = state - state_pool[-1]
+        prob = model.forward(state_difference)
+        m = Bernoulli(prob).sample()
+        action = m.numpy().astype(int).item() + 2
+        state_pool.append(state)
+        step = env.step(action)
+        state = prepro(step[0])
+        reward = step[1]
+        terminated = step[2]
+        truncated = step[3]
+        done = terminated or truncated
+        action_pool.append(action)
+        reward_pool.append(reward)
 
     # Discounted reward system
     running_reward = 0
-    for r in reversed(range(episode_length)):
+    for r in reversed(range(len(reward_pool))):
         if reward_pool[r] != 0:
             running_reward = 0
         running_reward = running_reward * discount_factor + reward_pool[r]
@@ -89,7 +87,7 @@ for i in range(episodes):
     # Gradient descent
     losses = 0
     optimizer.zero_grad()
-    for s in range(episode_length):
+    for s in range(len(reward_pool)):
         if s != 0:
             state = state_pool[s] - state_pool[s - 1]
             prob = model.forward(state)
@@ -103,7 +101,6 @@ for i in range(episodes):
             loss.backward()
 
         else:
-            optimizer.zero_grad()
             state = prepro(np.zeros(128))
             prob = model.forward(state)
             m = Bernoulli(prob)
