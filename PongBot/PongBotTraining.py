@@ -75,7 +75,7 @@ for i in range(episodes):
     # Discounted reward system
     running_reward = 0
     for r in reversed(range(episode_length)):
-        if reward_pool[r] == -1:
+        if reward_pool[r] != 0:
             running_reward = 0
         running_reward = running_reward * discount_factor + reward_pool[r]
         reward_pool[r] = running_reward
