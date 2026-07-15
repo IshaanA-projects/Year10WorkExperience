@@ -10,7 +10,7 @@ import torch.nn.functional as F
 
 
 discount_factor = 0.99
-alpha = 1e-3
+alpha = 1e-4
 episodes = 10000
 episode_length = 200
 class PongBot(nn.Module):
