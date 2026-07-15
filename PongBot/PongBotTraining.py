@@ -97,7 +97,9 @@ for i in range(episodes):
         state_input = torch.cat((state_pool[s], prev_state)
         prob = model.forward(state_input)
         m = Bernoulli(prob)
-        action = torch.tensor([[action_pool[s] - 2]])
+        action = torch.tensor(
+            [[float(action_pool[s] - 2)]]
+        )
         reward = reward_pool[s]
 
         loss = -1 * m.log_prob(action) * reward
