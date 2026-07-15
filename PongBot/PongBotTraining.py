@@ -90,7 +90,6 @@ for i in range(episodes):
     reward_pool /= np.max([np.std(reward_pool), 1e-2])
 
     # Gradient descent
-    optimizer.zero_grad()
     for s in range(len(reward_pool)):
         if s == 0:
             state_difference = init_state
