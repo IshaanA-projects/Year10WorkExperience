@@ -58,8 +58,9 @@ for i in range(episodes):
 
     while not done:
         state_input = torch.cat((state, prev_state), dim = 1)
-        prob = model.forward(state_input)
-        m = Bernoulli(prob).sample()
+        with torch.no_grad():
+            prob = model.forward(state_input)
+            m = Bernoulli(prob).sample()
         action = m.item() + 2
         state_pool.append(state.clone())
         prev_state = state.clone()
