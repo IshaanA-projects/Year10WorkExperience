@@ -1,3 +1,5 @@
+import numpy as np
+import gymnasium as gym
 import ale_py
 import torch
 import torch.nn as nn
