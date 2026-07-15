@@ -26,7 +26,7 @@ class PongBot(nn.Module):
 def prepro(I):
     I = torch.from_numpy(I)
     I = I.to(torch.float)
-    I.reshape(1, -1)
+    I = I.reshape(1, -1)
     return I
 
 
