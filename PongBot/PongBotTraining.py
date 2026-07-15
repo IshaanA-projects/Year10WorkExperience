@@ -86,6 +86,7 @@ for i in range(episodes):
 
 
     # Normalising the reward pool (So that half of actions are punished and half are rewarded)
+    reward_pool = np.array(reward_pool)
     reward_pool -= np.mean(reward_pool)
     reward_pool /= np.max([np.std(reward_pool), 1e-2])
 
@@ -98,8 +99,7 @@ for i in range(episodes):
 
         prob = model.forward(state_difference)
         m = Bernoulli(prob)
-        action = np.array(([action_pool[s] - 2])).astype(float)
-        action = torch.tensor(action)
+        action = torch.tensor([[action_pool[s] - 2]])
         reward = reward_pool[s]
 
         loss = -1 * m.log_prob(action) * reward
