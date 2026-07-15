@@ -88,9 +88,9 @@ for i in range(episodes):
 
     # Gradient descent
     losses = 0
+    optimizer.zero_grad()
     for s in range(episode_length):
         if s != 0:
-            optimizer.zero_grad()
             state = state_pool[s] - state_pool[s - 1]
             prob = model.forward(state)
             m = Bernoulli(prob)
