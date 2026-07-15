@@ -12,7 +12,7 @@ episodes = 5
 class PongBot(nn.Module):
     def __init__(self):
         super().__init__()
-        self.W1 = nn.Linear(128, 200)
+        self.W1 = nn.Linear(256, 200)
         self.W2 = nn.Linear(200, 100)
         self.W3 = nn.Linear(100, 1)
 
@@ -27,6 +27,7 @@ class PongBot(nn.Module):
 def prepro(I):
     I = torch.from_numpy(I)
     I = I.to(torch.float)
+    I = I / 255.0
     I = I.reshape(1, -1)
     return I
 
