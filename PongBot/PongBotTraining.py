@@ -18,7 +18,7 @@ batch_size = 10
 class PongBot(nn.Module):
     def __init__(self):
         super().__init__()
-        self.W1 = nn.Linear(128, 200)
+        self.W1 = nn.Linear(256, 200)
         self.W2 = nn.Linear(200, 100)
         self.W3 = nn.Linear(100, 1)
 
@@ -31,8 +31,8 @@ class PongBot(nn.Module):
 
 
 def prepro(I):
-    I = torch.from_numpy(I)
-    I = I.to(torch.float)
+    I = torch.from_numpy(I).float()
+    I = I / 255.0
     I = I.reshape(1, -1)
     return I
 
@@ -50,22 +50,20 @@ for i in range(episodes):
         optimizer.zero_grad()
         losses = 0
     state = prepro(env.reset()[0])
-    init_state = prepro(np.zeros(128))
+    prev_state = np.zeros_like(state)
     state_pool = []
     action_pool = []
     reward_pool = []
     done = False
     first_step = True
+    
     while not done:
-        if first_step:
-            state_difference = init_state
-            first_step = False
-        else:
-            state_difference = state - state_pool[-1]
-        prob = model.forward(state_difference)
+        state_input = torch.cat((state, prev_state), dim = 1)
+        prob = model.forward(state_input)
         m = Bernoulli(prob).sample()
         action = m.numpy().astype(int).item() + 2
-        state_pool.append(state)
+        state_pool.append(state.clone())
+        prev_state = state.clone()
         step = env.step(action)
         state = prepro(step[0])
         reward = step[1]
@@ -93,11 +91,12 @@ for i in range(episodes):
     # Gradient descent
     for s in range(len(reward_pool)):
         if s == 0:
-            state_difference = init_state
+            prev_state = torch.zeros_like(state_pool[s])
         else:
-            state_difference = state_pool[s] - state_pool[s-1]
+            prev_state = state_pool[s-1]
 
-        prob = model.forward(state_difference)
+        state_input = torch.cat((state_pool[s], prev_state)
+        prob = model.forward(state_input)
         m = Bernoulli(prob)
         action = torch.tensor([[action_pool[s] - 2]])
         reward = reward_pool[s]
