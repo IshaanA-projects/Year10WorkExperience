@@ -60,7 +60,7 @@ for i in range(episodes):
         state_input = torch.cat((state, prev_state), dim = 1)
         prob = model.forward(state_input)
         m = Bernoulli(prob).sample()
-        action = m.numpy().astype(int).item() + 2
+        action = m.item() + 2
         state_pool.append(state.clone())
         prev_state = state.clone()
         step = env.step(action)
