@@ -94,7 +94,7 @@ for i in range(episodes):
         else:
             prev_state = state_pool[s-1]
 
-        state_input = torch.cat((state_pool[s], prev_state)
+        state_input = torch.cat((state_pool[s], prev_state), dim = 1)
         prob = model.forward(state_input)
         m = Bernoulli(prob)
         action = torch.tensor(
