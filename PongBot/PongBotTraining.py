@@ -88,29 +88,20 @@ for i in range(episodes):
     losses = 0
     optimizer.zero_grad()
     for s in range(len(reward_pool)):
-        if s != 0:
-            state = state_pool[s] - state_pool[s - 1]
-            prob = model.forward(state)
-            m = Bernoulli(prob)
-            action  = np.array(([action_pool[s] - 2])).astype(float)
-            action = torch.tensor(action)
-            reward = reward_pool[s]
-
-            loss = -1 * m.log_prob(action) * reward
-            losses += loss.item()
-            loss.backward()
-
+        if s == 0:
+            state_difference = init_state
         else:
-            state = prepro(np.zeros(128))
-            prob = model.forward(state)
-            m = Bernoulli(prob)
-            action = np.array(([action_pool[s] - 2])).astype(float)
-            action = torch.tensor(action)
-            reward = reward_pool[s]
+            state_difference = state_pool[s] - state_pool[s-1]
 
-            loss = -1 * m.log_prob(action) * reward
-            losses += loss.item()
-            loss.backward()
+        prob = model.forward(state_difference)
+        m = Bernoulli(prob)
+        action = np.array(([action_pool[s] - 2])).astype(float)
+        action = torch.tensor(action)
+        reward = reward_pool[s]
+
+        loss = -1 * m.log_prob(action) * reward
+        losses += loss.item()
+        loss.backward()
 
 
 
