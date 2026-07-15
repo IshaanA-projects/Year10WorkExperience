@@ -50,13 +50,12 @@ for i in range(episodes):
         optimizer.zero_grad()
         losses = 0
     state = prepro(env.reset()[0])
-    prev_state = np.zeros_like(state)
+    prev_state = torch.zeros_like(state)
     state_pool = []
     action_pool = []
     reward_pool = []
     done = False
-    first_step = True
-    
+
     while not done:
         state_input = torch.cat((state, prev_state), dim = 1)
         prob = model.forward(state_input)
