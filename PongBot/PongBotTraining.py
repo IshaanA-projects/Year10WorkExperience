@@ -13,7 +13,7 @@ discount_factor = 0.99
 alpha = 1e-4
 episodes = 10000
 batch_size = 10
-
+raw_reward = []
 
 class PongBot(nn.Module):
     def __init__(self):
@@ -72,7 +72,9 @@ for i in range(episodes):
         done = terminated or truncated
         action_pool.append(action)
         reward_pool.append(reward)
-
+        
+    raw_reward.append(sum(reward_pool))
+    
     # Discounted reward system
     running_reward = 0
     for r in reversed(range(len(reward_pool))):
@@ -113,6 +115,8 @@ for i in range(episodes):
 
     if (i + 1) % 100 == 0:
         print(f"Episode : {i+1}")
+        print(f"Average raw reward: {sum(raw_reward) / 100}")
+        raw_reward = [
     if (i + 1) % 500 == 0:
         torch.save(model, r"bot.pt")   # Regular model saving to allow for the program to be run without fear of losing model parameters
 
