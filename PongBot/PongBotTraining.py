@@ -111,8 +111,10 @@ for i in range(episodes):
         optimizer.step()
         print(losses)
 
-    if (i + 1) % 500 == 0:
+    if (i + 1) % 100 == 0:
         print(f"Episode : {i+1}")
+    if (i + 1) % 500 == 0:
+        torch.save(model, r"bot.pt")   # Regular model saving to allow for the program to be run without fear of losing model parameters
 
 
 torch.save(model, r"bot.pt")
