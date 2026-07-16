@@ -53,7 +53,7 @@ for i in range(episodes):
         with torch.no_grad():
             prob = model(state_input)
             action = Bernoulli(prob).sample()
-        action = action.item() + 2
+        action = int(action.item()) + 2
         prev_state = state.clone()
         step = env.step(action)
         state = prepro(step[0])
