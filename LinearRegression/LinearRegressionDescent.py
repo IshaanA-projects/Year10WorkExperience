@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 # Hyperparameters
 epochs = 1000
-learning_rate = 1e-2
+learning_rate = 1e-3
 # Simulating random linear corellation
 x = np.linspace(1, 20)
 m = np.random.uniform(0, 4)
@@ -38,7 +38,7 @@ class LinearRegressor():
 model = LinearRegressor()
 
 
-def plot(epoch):
+def plot(title):
     plt.figure()
     plt.scatter(x, y, label = "data")
     y_hat = x * model.beta[1] + model.beta[0]
@@ -47,10 +47,14 @@ def plot(epoch):
     plt.xlabel("Input space")
     plt.ylabel("Output space")
     plt.grid()
+    plt.title(title)
     plt.show()
 
+plot("Initial regression line")
+
 for e in range(epochs):
-    if (e + 1) % 100 == 0:
-        plot(e+1)
     for sample in range(len(x)):
         model.grad_descent(x[sample], y[sample], lr = learning_rate)
+        
+        
+plot("Final regression line")
