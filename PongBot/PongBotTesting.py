@@ -9,7 +9,6 @@ import torch.nn.functional as F
 
 episodes = 5
 
-
 class PongBot(nn.Module):
     def __init__(self):
         super().__init__()
@@ -18,9 +17,9 @@ class PongBot(nn.Module):
         self.W3 = nn.Linear(100, 1)
 
     def forward(self, x):
-        x = F.relu(self.W1(x))
-        x = F.relu(self.W2(x))
-        x = F.sigmoid(self.W3(x))
+        x = torch.relu(self.W1(x))
+        x = torch.relu(self.W2(x))
+        x = torch.sigmoid(self.W3(x))
         return x
 
 
@@ -31,8 +30,6 @@ def prepro(I):
     I = I.reshape(1, -1)
     return I
 
-
-actor = PongBot()
 actor = torch.load(r"actor.pt", weights_only=False)
 actor.eval()
 
