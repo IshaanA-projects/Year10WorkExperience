@@ -116,7 +116,9 @@ for i in range(episodes):
     if (i + 1) % 100 == 0:
         print(f"Episode : {i+1}")
         print(f"Average raw reward: {sum(raw_reward) / 100}")
-        raw_reward = [
+        print(f"Highest raw reward: {max(raw_reward)}")
+        print(f"Lowest raw reward: {min(raw_reward)}")
+        raw_reward = []
     if (i + 1) % 500 == 0:
         torch.save(model, r"bot.pt")   # Regular model saving to allow for the program to be run without fear of losing model parameters
 
