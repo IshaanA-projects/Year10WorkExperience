@@ -9,13 +9,13 @@ import torch.nn.functional as F
 
 episodes = 5
 
+
 class PongBot(nn.Module):
     def __init__(self):
         super().__init__()
         self.W1 = nn.Linear(256, 200)
         self.W2 = nn.Linear(200, 100)
         self.W3 = nn.Linear(100, 1)
-
 
     def forward(self, x):
         x = F.relu(self.W1(x))
@@ -32,26 +32,23 @@ def prepro(I):
     return I
 
 
-
-model = PongBot()
-model = torch.load(r"bot.pt", weights_only = False)
-model.eval()
-
+actor = PongBot()
+actor = torch.load(r"actor.pt", weights_only=False)
+actor.eval()
 
 gym.register_envs(ale_py)
-env = gym.make("ALE/Pong-v5", render_mode = "human", obs_type = "ram")
-
+env = gym.make("ALE/Pong-v5", render_mode="human", obs_type="ram")
 
 for i in range(episodes):
     state = prepro(env.reset()[0])
     prev_state = torch.zeros_like(state)
-    
+
     done = False
-    
+
     while not done:
         state_input = torch.cat((state, prev_state), dim=1)
         with torch.no_grad():
-            prob = model(state_input)
+            prob = actor(state_input)
             action = Bernoulli(prob).sample()
         action = int(action.item()) + 2
         prev_state = state.clone()
